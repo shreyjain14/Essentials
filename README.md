@@ -36,6 +36,7 @@ Essentials is an all-in-one utility plugin for Hytale server administrators.
 | <code>/kit create</code> | Create a kit from your inventory | <code>essentials.kit.create</code> |
 | <code>/kit delete</code> | Delete a kit                     | <code>essentials.kit.delete</code> |
 | <code>/back</code>       | Teleport to your last death      | <code>essentials.back</code>       |
+| <code>/rtp</code>        | Random teleport                  | <code>essentials.rtp</code>        |
 
 # Permissions
 
@@ -60,6 +61,8 @@ Essentials is an all-in-one utility plugin for Hytale server administrators.
 | <code>essentials.kit.cooldown.bypass</code> | Bypass kit cooldowns                   |
 | <code>essentials.teleport.bypass</code>     | Bypass teleport delay                  |
 | <code>essentials.back</code>                | Teleport to last death location        |
+| <code>essentials.rtp</code>                 | Random teleport                        |
+| <code>essentials.rtp.cooldown.bypass</code> | Bypass RTP cooldown                    |
 
 To setup permissions, please view these unofficial docs: [https://hytale-docs.pages.dev/modding/plugins/permissions/](https://hytale-docs.pages.dev/modding/plugins/permissions/)
 
@@ -104,6 +107,11 @@ Players must stand still during the delay or the teleport is canceled. Players w
 *   `spawn-protection.show-titles` - Show enter/exit titles
 *   `spawn-protection.enter-title` / `enter-subtitle` - Title on enter
 *   `spawn-protection.exit-title` / `exit-subtitle` - Title on exit
+
+**Random Teleport (RTP)**
+
+*   `rtp.world` - World to teleport to (default: "default")
+*   `rtp.radius` - Maximum radius from 0,0 for random location (default: 5000)
 
 **Kits**
 

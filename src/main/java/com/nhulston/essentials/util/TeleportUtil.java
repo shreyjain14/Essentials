@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 public final class TeleportUtil {
 
     /** Maximum blocks to search upward for a safe position */
-    private static final int MAX_SAFE_SEARCH = 32;
+    private static final int MAX_SAFE_SEARCH = 128;
 
     /** Player height in blocks (need 2 air blocks for player to fit) */
     private static final int PLAYER_HEIGHT = 2;
@@ -124,7 +124,6 @@ public final class TeleportUtil {
      * @param player The player to teleport
      * @param spawn  The spawn location
      */
-    @Nullable
     public static void teleportToSpawn(@Nonnull PlayerRef player, @Nonnull Spawn spawn) {
         Ref<EntityStore> playerRef = player.getReference();
         if (playerRef == null || !playerRef.isValid()) {
@@ -275,5 +274,70 @@ public final class TeleportUtil {
         }
         BlockMaterial material = blockType.getMaterial();
         return material == BlockMaterial.Solid;
+    }
+
+    /**
+     * Checks if a position contains fluid (water or lava).
+     * Fluids are stored separately from blocks in Hytale.
+     * TODO: Update when Hytale provides non-deprecated fluid API.
+     */
+    @SuppressWarnings("removal")
+    private static boolean hasFluid(@Nonnull WorldChunk chunk, int x, int y, int z) {
+        return chunk.getFluidId(x, y, z) > 0;
+    }
+
+    /**
+     * Finds a safe Y position for RTP by searching from top down.
+     * Finds the highest solid block, then checks if player can stand there safely.
+     * Returns null if location has fluid (water/lava).
+     *
+     * @param world The world to check
+     * @param x X coordinate
+     * @param z Z coordinate
+     * @return Safe Y coordinate (one above ground), or null if unsafe (fluid/no ground)
+     */
+    @Nullable
+    public static Double findSafeRtpY(@Nonnull World world, double x, double z) {
+        int blockX = (int) Math.floor(x);
+        int blockZ = (int) Math.floor(z);
+
+        long chunkIndex = ChunkUtil.indexChunkFromBlock(blockX, blockZ);
+        WorldChunk chunk = world.getChunk(chunkIndex);
+        if (chunk == null) {
+            return null; // Chunk not loaded
+        }
+
+        // Search from top down to find first solid block
+        int startY = 200;
+        int minY = 0;
+        
+        for (int checkY = startY; checkY >= minY; checkY--) {
+            // Check for fluid at this level - if found, abort this location
+            if (hasFluid(chunk, blockX, checkY, blockZ)) {
+                return null; // Hit water/lava, this location is no good
+            }
+            
+            // Check if this block is solid (ground)
+            if (isSolidBlock(chunk, blockX, checkY, blockZ)) {
+                // Found ground! Player spawns at checkY + 1
+                int spawnY = checkY + 1;
+                
+                // Verify there's space for player (2 blocks) and no fluid
+                if (hasFluid(chunk, blockX, spawnY, blockZ) || 
+                    hasFluid(chunk, blockX, spawnY + 1, blockZ)) {
+                    return null; // Fluid above ground
+                }
+                
+                // Make sure head space isn't blocked
+                if (isSolidBlock(chunk, blockX, spawnY + 1, blockZ)) {
+                    // Only 1 block of space, keep searching down
+                    continue;
+                }
+                
+                return (double) spawnY;
+            }
+        }
+
+        return null; // No solid ground found
     }
 }

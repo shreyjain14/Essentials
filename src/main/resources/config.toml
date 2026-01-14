@@ -74,3 +74,15 @@ enter-subtitle = "This is a protected area"
 # Title shown when leaving spawn (leave empty to disable)
 exit-title = "Leaving Spawn"
 exit-subtitle = "You can now build"
+
+[rtp]
+# Random teleport settings
+
+# World to teleport to (must be loaded)
+world = "default"
+
+# Maximum radius from 0,0 for random teleport
+radius = 5000
+
+# Cooldown in seconds between RTP uses
+cooldown = 300

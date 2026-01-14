@@ -17,6 +17,9 @@ public class ConfigManager {
     private static final String DEFAULT_CHAT_FORMAT = "&7%player%&f: %message%";
     private static final int DEFAULT_SPAWN_PROTECTION_RADIUS = 16;
     private static final int DEFAULT_TELEPORT_DELAY = 3;
+    private static final String DEFAULT_RTP_WORLD = "default";
+    private static final int DEFAULT_RTP_RADIUS = 5000;
+    private static final int DEFAULT_RTP_COOLDOWN = 300;
 
     private final Path configPath;
     private int maxHomes = DEFAULT_MAX_HOMES;
@@ -48,6 +51,11 @@ public class ConfigManager {
     private String spawnProtectionEnterSubtitle = "This is a protected area";
     private String spawnProtectionExitTitle = "Leaving Spawn";
     private String spawnProtectionExitSubtitle = "You can now build";
+
+    // RTP settings
+    private String rtpWorld = DEFAULT_RTP_WORLD;
+    private int rtpRadius = DEFAULT_RTP_RADIUS;
+    private int rtpCooldown = DEFAULT_RTP_COOLDOWN;
 
     public ConfigManager(@Nonnull Path dataFolder) {
         this.configPath = dataFolder.resolve("config.toml");
@@ -110,6 +118,11 @@ public class ConfigManager {
             spawnProtectionEnterSubtitle = config.getString("spawn-protection.enter-subtitle", () -> "This is a protected area");
             spawnProtectionExitTitle = config.getString("spawn-protection.exit-title", () -> "Leaving Spawn");
             spawnProtectionExitSubtitle = config.getString("spawn-protection.exit-subtitle", () -> "You can now build");
+
+            // RTP config
+            rtpWorld = config.getString("rtp.world", () -> DEFAULT_RTP_WORLD);
+            rtpRadius = Math.toIntExact(config.getLong("rtp.radius", () -> (long) DEFAULT_RTP_RADIUS));
+            rtpCooldown = Math.toIntExact(config.getLong("rtp.cooldown", () -> (long) DEFAULT_RTP_COOLDOWN));
 
             Log.info("Config loaded!");
         } catch (IOException e) {
@@ -216,5 +229,18 @@ public class ConfigManager {
     @Nonnull
     public String getSpawnProtectionExitSubtitle() {
         return spawnProtectionExitSubtitle;
+    }
+
+    @Nonnull
+    public String getRtpWorld() {
+        return rtpWorld;
+    }
+
+    public int getRtpRadius() {
+        return rtpRadius;
+    }
+
+    public int getRtpCooldown() {
+        return rtpCooldown;
     }
 }
