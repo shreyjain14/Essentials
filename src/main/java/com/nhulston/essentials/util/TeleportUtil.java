@@ -5,6 +5,8 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -36,5 +38,44 @@ public final class TeleportUtil {
         store.putComponent(ref, Teleport.getComponentType(), teleport);
 
         return null;
+    }
+
+    /**
+     * Teleports one player to another player's location.
+     *
+     * @param player The player to teleport
+     * @param target The player to teleport to
+     */
+    public static void teleportToPlayer(@Nonnull PlayerRef player, @Nonnull PlayerRef target) {
+        Ref<EntityStore> playerRef = player.getReference();
+        Ref<EntityStore> targetRef = target.getReference();
+        
+        if (playerRef == null || !playerRef.isValid()) {
+            return;
+        }
+        
+        if (targetRef == null || !targetRef.isValid()) {
+            return;
+        }
+        
+        Store<EntityStore> playerStore = playerRef.getStore();
+        Store<EntityStore> targetStore = targetRef.getStore();
+        
+        // Get target's position
+        TransformComponent targetTransform = targetStore.getComponent(targetRef, TransformComponent.getComponentType());
+        if (targetTransform == null) {
+            return;
+        }
+        
+        Vector3d targetPos = targetTransform.getPosition();
+        
+        // Get target's world
+        EntityStore targetEntityStore = targetStore.getExternalData();
+        World targetWorld = targetEntityStore.getWorld();
+        
+        // Teleport the player
+        Teleport teleport = new Teleport(targetWorld, targetPos, new Vector3f(0, 0, 0));
+        playerStore.putComponent(playerRef, Teleport.getComponentType(), teleport);
+
     }
 }

@@ -7,6 +7,8 @@ import com.nhulston.essentials.commands.home.HomeCommand;
 import com.nhulston.essentials.commands.home.SetHomeCommand;
 import com.nhulston.essentials.commands.spawn.SetSpawnCommand;
 import com.nhulston.essentials.commands.spawn.SpawnCommand;
+import com.nhulston.essentials.commands.tpa.TpaCommand;
+import com.nhulston.essentials.commands.tpa.TpacceptCommand;
 import com.nhulston.essentials.commands.warp.DelWarpCommand;
 import com.nhulston.essentials.commands.warp.SetWarpCommand;
 import com.nhulston.essentials.commands.warp.WarpCommand;
@@ -18,6 +20,7 @@ import com.nhulston.essentials.managers.ChatManager;
 import com.nhulston.essentials.managers.HomeManager;
 import com.nhulston.essentials.managers.SpawnManager;
 import com.nhulston.essentials.managers.SpawnProtectionManager;
+import com.nhulston.essentials.managers.TpaManager;
 import com.nhulston.essentials.managers.WarpManager;
 import com.nhulston.essentials.util.ConfigManager;
 import com.nhulston.essentials.util.StorageManager;
@@ -33,6 +36,7 @@ public class Essentials extends JavaPlugin {
     private SpawnManager spawnManager;
     private ChatManager chatManager;
     private SpawnProtectionManager spawnProtectionManager;
+    private TpaManager tpaManager;
 
     public Essentials(@Nonnull JavaPluginInit init) {
         super(init);
@@ -51,6 +55,7 @@ public class Essentials extends JavaPlugin {
         spawnManager = new SpawnManager(storageManager);
         chatManager = new ChatManager(configManager);
         spawnProtectionManager = new SpawnProtectionManager(configManager, storageManager);
+        tpaManager = new TpaManager();
     }
 
     @Override
@@ -66,6 +71,10 @@ public class Essentials extends JavaPlugin {
 
         if (storageManager != null) {
             storageManager.shutdown();
+        }
+
+        if (tpaManager != null) {
+            tpaManager.shutdown();
         }
 
         Log.info("Essentials shut down.");
@@ -85,6 +94,10 @@ public class Essentials extends JavaPlugin {
         // Spawn commands
         getCommandRegistry().registerCommand(new SetSpawnCommand(spawnManager));
         getCommandRegistry().registerCommand(new SpawnCommand(spawnManager));
+
+        // TPA commands
+        getCommandRegistry().registerCommand(new TpaCommand(tpaManager));
+        getCommandRegistry().registerCommand(new TpacceptCommand(tpaManager));
     }
 
     private void registerEvents() {
