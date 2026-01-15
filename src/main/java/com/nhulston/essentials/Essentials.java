@@ -14,6 +14,7 @@ import com.nhulston.essentials.commands.list.ListCommand;
 import com.nhulston.essentials.commands.msg.MsgCommand;
 import com.nhulston.essentials.commands.msg.ReplyCommand;
 import com.nhulston.essentials.commands.rtp.RtpCommand;
+import com.nhulston.essentials.commands.top.TopCommand;
 import com.nhulston.essentials.commands.tphere.TphereCommand;
 import com.nhulston.essentials.commands.spawn.SetSpawnCommand;
 import com.nhulston.essentials.commands.spawn.SpawnCommand;
@@ -166,6 +167,9 @@ public class Essentials extends JavaPlugin {
 
         // Tphere command
         getCommandRegistry().registerCommand(new TphereCommand());
+
+        // Top command
+        getCommandRegistry().registerCommand(new TopCommand());
     }
 
     private void registerEvents() {
