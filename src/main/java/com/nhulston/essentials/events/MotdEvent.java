@@ -45,6 +45,9 @@ public class MotdEvent {
             // Replace placeholder
             message = message.replace("%player%", playerName);
             
+            // Normalize line endings (remove \r from Windows line endings)
+            message = message.replace("\r", "");
+            
             // Split by newlines and send each line
             String[] lines = message.split("\n");
             for (String line : lines) {
