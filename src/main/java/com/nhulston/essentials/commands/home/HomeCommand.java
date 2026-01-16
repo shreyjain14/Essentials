@@ -28,6 +28,7 @@ public class HomeCommand extends AbstractPlayerCommand {
         this.homeManager = homeManager;
         this.teleportManager = teleportManager;
 
+        addAliases("homes");
         requirePermission("essentials.home");
         addUsageVariant(new HomeNamedCommand(homeManager, teleportManager));
     }
