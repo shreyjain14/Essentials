@@ -54,15 +54,21 @@ tasks {
     shadowJar {
         archiveBaseName.set(rootProject.name)
         archiveClassifier.set("")
-        destinationDirectory.set(file("/mnt/c/Users/Nicholas/Development/hytale-server/mods"))
+        // Comment out WSL path - use build/libs instead
+        // destinationDirectory.set(file("/mnt/c/Users/Nicholas/Development/hytale-server/mods"))
+
+        // Explicitly include runtime dependencies
+        configurations = listOf(project.configurations.runtimeClasspath.get())
 
         // Relocate dependencies to avoid conflicts
         relocate("com.google.gson", "com.nhulston.libs.gson")
         relocate("org.tomlj", "com.nhulston.libs.tomlj")
         relocate("org.antlr", "com.nhulston.libs.antlr")
+        relocate("com.google.errorprone", "com.nhulston.libs.errorprone")
+        relocate("io.netty", "com.nhulston.libs.netty")
 
-        // Minimize JAR size (removes unused classes)
-        minimize()
+        // Merge service files properly
+        mergeServiceFiles()
     }
 
     // Configure tests
